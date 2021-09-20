@@ -4,21 +4,28 @@
 //
 //  Created by Simon Mcneil on 2021-09-10.
 //
-
 import UIKit
 
 class SpinningView: UIView {
-	
+
+	/// The initial gap between stroke start and end
+	private let startOffset: Double = 0.07
+
 	let circleLayer = CAShapeLayer()
-	
-	let rotationAnimation: CAAnimation = {
-		let animation = CABasicAnimation(keyPath: "transform.rotation.z")
-		animation.fromValue = 0
-		animation.toValue = Double.pi * 2
-		animation.duration = 8 // increase this duration to slow down the circle animation effect
-		animation.repeatCount = MAXFLOAT
-		return animation
-	}()
+
+	var rotationAnimation: CAAnimation{
+		get{
+			let radius = Double(bounds.width) / 2.0
+			let perimeter = 2 * Double.pi * radius
+			let theta = perimeter * startOffset / (2 * radius)
+			let animation = CABasicAnimation(keyPath: "transform.rotation.z")
+			animation.fromValue = 0
+			animation.toValue = theta * 2 + Double.pi * 2
+			animation.duration = 3.5 // increase this duration to slow down the circle animation effect
+			animation.repeatCount = MAXFLOAT
+			return animation
+		}
+	}
 	
 	
 	
@@ -60,12 +67,12 @@ class SpinningView: UIView {
 		let strokeStartAnimation: CABasicAnimation = CABasicAnimation(keyPath: "strokeStart")
 		strokeStartAnimation.beginTime = 0.5
 		strokeStartAnimation.fromValue = 0
-		strokeStartAnimation.toValue = 0.93 //change this to 0.93 for cool effect
+		strokeStartAnimation.toValue = 1.0 - startOffset //change this to 0.93 for cool effect
 		strokeStartAnimation.duration = 3.0
 		strokeStartAnimation.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
 		
 		let strokeEndAnimation: CABasicAnimation = CABasicAnimation(keyPath: "strokeEnd")
-		strokeEndAnimation.fromValue = 0
+		strokeEndAnimation.fromValue = startOffset
 		strokeEndAnimation.toValue = 1.0
 		strokeEndAnimation.duration = 2.0
 		strokeEndAnimation.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
